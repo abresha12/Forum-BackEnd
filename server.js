@@ -6,7 +6,7 @@ const pool = require('./server/config/database')
 const cors = require('cors')
 require('dotenv').config();
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT||80;
 
 app.use(cors());
 app.use(express.urlencoded({ extended: true }))
