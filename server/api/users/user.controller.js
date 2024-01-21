@@ -2,7 +2,7 @@ const { register, profile, userById, getUserByEmail, getAllUsers } = require('./
 const pool = require('../../config/database')
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
- 
+
 module.exports = {
     createUser: (req, res) => {
         const { userName, firstName, lastName, email, password } = req.body;
@@ -88,35 +88,39 @@ module.exports = {
           return res.status(200).json({ data: results });
         });
       },
-    login: (req, res) => {
+      login: (req, res) => {
         const { email, password } = req.body;
-        console.log(req.body)
-
-        if (!email||!password) {
-           return res.status(400).json({msg:'not all fields have been provided!'}) 
+    
+        if (!email || !password) {
+            return res.status(400).json({ msg: 'Not all fields have been provided!' });
         }
-        getUserByEmail(email, (err,result) => {
+    
+        getUserByEmail(email, (err, result) => {
             if (err) {
-                return res.status(500).json({msg:'database connection error'})
+                return res.status(500).json({ msg: 'Database connection error' });
             }
-            if (!result) {
-                return res.status(400).json({msg:'no user is registerd using this email'})
+    
+            if (!result || result.length === 0) {
+                return res.status(400).json({ msg: 'No user is registered using this email' });
             }
-            
+    
             const isPassMatch = bcrypt.compareSync(password, result[0].user_password);
             if (!isPassMatch) {
-                return res.status(400).json({msg:'invalid credentials'})  
+                return res.status(400).json({ msg: 'Invalid credentials' });
             }
+    
             const token = jwt.sign({ id: result[0].user_id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-            
+    
             return res.status(200).json({
                 token,
                 user: {
                     id: result[0].user_id,
-                    display_name:result[0].user_name
-            }})
-        })
+                    display_name: result[0].user_name
+                }
+            });
+        });
     },
+    
     getUserById: (req, res) => {
         userById(req.id, (err, result) => {
             if (err) 

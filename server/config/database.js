@@ -2,13 +2,16 @@ const mysql = require('mysql2')
 require('dotenv').config();
 
 
-let pool = mysql.createPool({
-    host:process.env.DB_HOST,
-    user:process.env.DB_USER,
-    password:process.env.DB_PASSWORD,
-    database:process.env.MYSQL_DB,
-    connectionLimit:10
-});
+// let pool = mysql.createPool({
+//     host:process.env.DB_HOST,
+//     user:process.env.DB_USER,
+//     password:process.env.DB_PASSWORD,
+//     database:process.env.MYSQL_DB,
+//     connectionLimit:10
+// });
+
+const pool = mysql.createPool(process.env.DATABASE_URL)
+
 pool.getConnection(function (err, connection) {
      if (err) throw err;
         console.log('Database connected')
@@ -27,8 +30,7 @@ let profile = `CREATE TABLE if not exists profile(
     first_name varchar(255) not null,
     last_name varchar(255) not null,
     user_password varchar(255) not null,
-    PRIMARY KEY (user_profile_id),
-    FOREIGN KEY (user_id) REFERENCES registration(user_id)
+    PRIMARY KEY (user_profile_id)
 )`
 
 let question = `CREATE TABLE if not exists question(
@@ -38,8 +40,7 @@ let question = `CREATE TABLE if not exists question(
     question_description varchar(255),
     question_code_block varchar(255),
     tags varchar(255),
-    PRIMARY KEY (question_id),
-    FOREIGN KEY (user_id) REFERENCES registration(user_id)
+    PRIMARY KEY (question_id)
 )`
 let answer = `CREATE TABLE if not exists answer(
     answer_id int auto_increment,
@@ -47,9 +48,7 @@ let answer = `CREATE TABLE if not exists answer(
     question_id int not null,
     answer varchar(255) not null,
     answer_code_block varchar(255),
-    PRIMARY KEY (answer_id),
-    FOREIGN KEY (question_id) REFERENCES question(question_id),
-    FOREIGN KEY (user_id) REFERENCES registration(user_id)
+    PRIMARY KEY (answer_id)
 )`
 
 pool.query(registration, (err, results) => {

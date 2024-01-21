@@ -1,8 +1,8 @@
 const express = require('express')
-const UserRouter = require('../server/api/users/user.router')
-const questionRouter = require('../server/api/question/question.route')
-const answerRouter = require('../server/api/answer/answer.router')
-const pool = require('../server/config/database')
+const UserRouter = require('./server/api/users/user.router')
+const questionRouter = require('./server/api/question/question.route')
+const answerRouter = require('./server/api/answer/answer.router')
+const pool = require('./server/config/database')
 const cors = require('cors')
 require('dotenv').config();
 const app = express();
@@ -15,7 +15,6 @@ app.use(express.json());
 app.use('/api/users', UserRouter);
 app.use('/api/question', questionRouter);
 app.use('/api/answer', answerRouter);
-
 
 
 app.listen(port,()=>console.log(`listening at http://localhost:${port}`))
